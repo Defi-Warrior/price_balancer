@@ -12,3 +12,6 @@ class Interface:
 
     with open(join(dir_path, "./abis", "Router.json"), "r") as f:
         ROUTER = json.load(f)
+
+    with open(join(dir_path, "./abis", "LP_Pair.json"), "r") as f:
+        LP_PAIR = json.load(f)
