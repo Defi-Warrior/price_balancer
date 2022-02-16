@@ -39,6 +39,11 @@ def expand_to_18_decimals(value: int):
 def run(arg: dict, cfg: Config):
     contract = ContractHelper(cfg.web3, os.environ.get("PRIVATE_KEY"), arg["network"])
 
+    busd = contract.deployed(Interface.ERC20, cfg.BUSD_ADDRESS)
+
+    if busd.functions.allowance(contract.address, cfg.ROUTER_ADDRESS).call() == 0:
+        contract.run_func(busd, "approve", [cfg.ROUTER_ADDRESS, expand_to_18_decimals(1000000000)])
+
     router = contract.deployed(Interface.ROUTER, cfg.ROUTER_ADDRESS)
 
     lp_pair = contract.deployed(Interface.LP_PAIR, cfg.CWIG_BUSD_LP_ADDRESS)
@@ -63,8 +68,8 @@ def run(arg: dict, cfg: Config):
 
         amount_in = new_busd_reserve - busd_reserve
 
-        if amount_in > expand_to_18_decimals(3000):
-            amount_in = expand_to_18_decimals(3000)
+        if amount_in > expand_to_18_decimals(arg["max_buy_amount"]):
+            amount_in = expand_to_18_decimals(arg["max_buy_amount"])
 
         amount_out = int(router.functions.getAmountsOut(amount_in, [cfg.BUSD_ADDRESS, cfg.CWIG_ADDRESS]).call()[1] * 0.99)
 
@@ -92,6 +97,8 @@ if __name__ == '__main__':
                            help="which network to run")
     arg_parse.add_argument("--interval", type=int, required=False, default=3600,
                            help="bot will check price after 'interval' time has passed")
+    arg_parse.add_argument("--max_buy_amount", type=int, required=False, default=3000,
+                           help="maximum number of usd per trade")
 
     args = vars(arg_parse.parse_args())
 
