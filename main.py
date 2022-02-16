@@ -26,8 +26,8 @@ def read_config(network: str) -> Config:
     cfg.web3 = Web3(Web3.HTTPProvider(config_section["PROVIDER"]))
 
     while not cfg.web3.isConnected():
-        print("Could not connect to: ", config_section["PROVIDER"], "retry in 30 seconds")
-        time.sleep(30)
+        print("Could not connect to: ", config_section["PROVIDER"], "retry in 10 seconds")
+        time.sleep(10)
 
     return cfg
 
@@ -53,7 +53,7 @@ def run(arg: dict, cfg: Config):
     current_price = busd_reserve / cwig_reserve
     k = busd_reserve * cwig_reserve
     target_price = random.uniform(arg["low_price"], arg["high_price"])
-    print(f"new target price: {target_price}")
+    print(f"current price: {current_price}, new target price: {target_price}")
 
     if current_price < float(arg["low_price"]):
         new_busd_reserve = int(math.sqrt(k*target_price))
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     arg_parse = argparse.ArgumentParser()
     arg_parse.add_argument("low_price", type=float, help="lower bound of cwig-busd price")
     arg_parse.add_argument("high_price", type=float, help="upper bound of cwig-busd price")
-    arg_parse.add_argument("--network", type=str, required=False, default="testnet", choices=["mainnet", "testnet"],
+    arg_parse.add_argument("--network", type=str, required=False, default="testnet", choices=["mainnet", "testnet", "polygon"],
                            help="which network to run")
     arg_parse.add_argument("--interval", type=int, required=False, default=3600,
                            help="bot will check price after 'interval' time has passed")

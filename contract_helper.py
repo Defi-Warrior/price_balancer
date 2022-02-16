@@ -3,12 +3,16 @@ from web3 import Web3
 
 
 class ContractHelper:
+
+    CHAIN_IDS = {"testnet": 97, "mainnet": 56, "polygon": 137}
+    GAS_PRICES = {"testnet": 10, "mainnet": 6, "polygon": 30}
+
     def __init__(self, web3, private_key: str, network: str):
         self.web3 = web3
         self.account = eth_account.Account.from_key(private_key)
         self.private_key = private_key
-        self.chain_id = 56 if network == "mainnet" else 97
-        self.default_gasprice = Web3.toWei('6', 'gwei') if network == "mainnet" else Web3.toWei('10', 'gwei')
+        self.chain_id = ContractHelper.CHAIN_IDS[network]
+        self.default_gasprice = Web3.toWei(ContractHelper.GAS_PRICES[network], 'gwei')
         self.address = self.account.address
 
     def deployed(self, interface, address):
