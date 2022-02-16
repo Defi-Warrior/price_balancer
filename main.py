@@ -97,7 +97,7 @@ if __name__ == '__main__':
                            help="which network to run")
     arg_parse.add_argument("--interval", type=int, required=False, default=3600,
                            help="bot will check price after 'interval' time has passed")
-    arg_parse.add_argument("--max_buy_amount", type=int, required=False, default=3000,
+    arg_parse.add_argument("--max_buy_amount", type=int, required=False, default=1000,
                            help="maximum number of usd per trade")
 
     args = vars(arg_parse.parse_args())
